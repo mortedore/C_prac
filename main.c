@@ -1,14 +1,93 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
-
-#define STRLEN 100  //maximum string length that strlen function will process.
-//Message length must be less than this.
-// #define MESLEN 10
-//This function is from uDemy lesson
-//
+#define STRLEN 100  //maximum string length that strlen function will process. Message length must be less than this.
+#define MESLEN 10
 //STRLEN is passed to maxlen
+
+
+struct letter {
+	char name[STRLEN];
+	char password[STRLEN];
+	char message[STRLEN];
+	char cipher[STRLEN];
+};
+struct letter MyLetter;
+
+int readln(char passed_strg[], int maxlen);
+void * encrypt (char passed[]);
+void * decrypt (char passed[]);
+void display();
+
+int main() {
+	char Selection[1];
+	char menuChoice[1];
+
+	int Menu = 0;
+	int Length = 0;
+	int i = 0;
+	int redo = 1;  //redo input loop until message accepted
+	
+	system("clear");
+	puts("|-------iCipher Message-------|");
+	puts("|--Developed by T. Sahlstrom--|");
+	puts("|---------March, 2021---------|\n\n");
+	
+		/*	printf("Enter your name:\n");
+		readln(MyLetter.name, STRLEN);
+		printf("Welcome %s. \n", MyLetter.name);
+		printf("Enter the password to continue:\n");
+		readln(MyLetter.password, STRLEN);
+		printf("< Password Accepted >\n");
+	*/	
+		
+	do{
+		display(MyLetter.message);
+		readln(Selection, STRLEN);
+		switch (Selection[0]) {
+			case 'n': case 'N':
+				do {
+					puts("[New Message]");
+					printf("Enter your message now:\n");
+					readln(MyLetter.message, STRLEN);
+					Length = strlen(MyLetter.message);
+					if (Length <= MESLEN) {
+						redo = 0;
+					}
+					else {
+						printf("Message Overun. Please try again.\n");
+						printf("%d/%d characters used. %d remain.\n", Length, MESLEN, (MESLEN-Length));
+						redo = 1;
+					}
+				} while (redo ==1);
+				strcpy(MyLetter.cipher, MyLetter.message); //preserve message, work with cipher.	
+				Menu = 0;
+				break;
+			case 'e': case 'E':
+				puts("Encrypt\n");
+				encrypt(MyLetter.cipher);
+				Menu = 1;
+				break;
+			case 'd': case 'D':
+				puts("Decrypt\n");
+				decrypt(MyLetter.cipher);
+				Menu = 2;
+				break;
+			case 'q': case 'Q':
+				puts("Quit\n");
+				Menu = 3;
+				break;
+			default:
+				puts("No Selection\n");
+				break;
+		} 
+	} while (Menu != 3);
+	return 0;
+}
+
+//This function is from uDemy lesson
 int readln(char passed_strg[], int maxlen) {
 	char user_input;
 	int i;
@@ -28,182 +107,46 @@ int readln(char passed_strg[], int maxlen) {
 	passed_strg[i] = '\0';
 	return i;
 }
-
-/*
-void whilebreak() {
-	int i;
-	char c;
-	char str[50];
-	i = 0;
-	while( i >= 0 ){
-		c = chararray[i];
-		printf("[%d]='%c' ", i, c);
-		if (c == '!'){
-			str[i] = '\0';
-			break;
-		}
-		str[i] = c;
-		i++;
-	}
-	printf("\nAfter while loop, str='%s'", str);
+void display() {
+	system("clear");
+	printf("Original Message: [%s]\n", MyLetter.message);
+	printf("Encrypted Message: [%s]\n", MyLetter.cipher);
+	puts("________________________");
+	puts("Enter New Message....[N]");
+	puts("Run Encryption.......[E]");
+	puts("Decrypt Message......[D]");
+	puts("Quit.................[Q]");
+	puts("________________________");
+	//printf("Your Message reads: \n$s\n", MyLetter.message);
 }
-void forbreak() {
+void * encrypt (char passed[]) {
 	int i;
-	char str[50];
 	char c;
-	// for loop #1 - encrypt string
-	for( i = 0; i < 50; i++) {		
-		c = chararray[i];
-		if (c == ' ') {
-			str[i] = c;
-			continue;
-		}
-		if (c == '!') {
-			str[i] = '\0';
-			break;
-		}		
-		str[i] = chararray[i] + 1;
-	}
-	printf("Encrypted string is '%s'\n", str);
-	
-	// for loop #2 - decrypt string
-	for( i = 0; i < 50; i++) {		
-		c = str[i];
-		if (c == ' ') {			
+	char d;
+	for (i = 0; i < STRLEN; i++) {
+		c = passed[i];
+		if (c == ' '){
 			continue;
 		}
 		if (c == '\0') {
 			break;
 		}
-		
-		str[i] = str[i] - 1;
+		MyLetter.cipher[i] = MyLetter.cipher[i] + 2;
 	}
-	printf("Decrypted string is '%s'\n", str);
+	return 0;
 }
-*/
-//typedef char Str50[50];
-/*
-struct letter {
-	char name[50];
-	char date[10];
-	char message[100];
-};
-struct letter MyLetter;
-char testName[30];
-*/
-char charOut[0];
-char * concat_funct(char passed[]){
-	char catThis[] = "999";
-	printf("Initialized charOut: '%s'\n", charOut);
-	printf("---concat_funct---\nPassed string: %s\n", passed);
-	printf("Add String: %s\n", catThis);
-	strcat(charOut, passed);
-	strcat (charOut, catThis);
-	printf("New variable to pass back to main: %s\n-----------------\n", charOut); 
-	return charOut;
-}
-
-int main() {
-	//this is my first working function with pass and reutrn!
-	printf("\nThis is my first function with pass and reutrn.\n\n");
-	char userIn[] = "hi";
-	concat_funct(userIn);
-	printf("---MAIN---\nNew String: %s\n-----------------\n", charOut);
-
-	printf("Now run getName function:\n");
-	char YourName[STRLEN];
-	char Password[STRLEN];
-	char Message[STRLEN];
-
-	char Select[0];
-	int Menu=9;
-
-	//char mess[MESLEN];
-	//char *msg;
-	int Length = 0;
-	int i=0;
-	int redo = 1;  //redo input loop until message accepted
-	do {
-		printf("Enter your name:\n");
-		readln(YourName, STRLEN);
-		printf("Welcome %s.\n",YourName);
-		printf("Enter the password to continue:\n");
-		readln(Password, STRLEN);
-		printf("< Password Accepted >\nEnter your message now:\n");
-		readln(Message, STRLEN);
-		//fgets(Message, STRLEN, stdin);
-		printf("Your message reads: \n%s\n", Message);
-		printf("The length of your message is %d characters.\n", Length = strlen(Message)-1);
-		if (Length <= STRLEN)
-			{
-				printf("Message accepted.\n");
-				redo = 0;
-			}
-		else 
-			{
-				printf("< Message Overun. Please try again. >\n");
-				redo = 1;
-			}
-		} while (redo == 1);
-	do { 
-		puts("Run Encryption: [0]");
-		puts("Decrypt Message: [1]");
-		puts("Quit: [2]");
-		readln(Select, STRLEN);
-		Menu = atoi(Select); //forgot this at first.
-		switch (Menu) {
-			case 0:
-				puts("Encrypt");
-				Menu = 0;
-				break;
-			case 1:
-				puts("Decrypt");
-				Menu = 1;
-				break;
-			case 2:
-				puts("Quit");
-				Menu = 2;
-				break;
-			default:
-				puts("No Selection");
-				break;
-			}
-		} while (Menu != 2);
-	
-	
-	/*
-	if (Select == "Q") 
-	{
-		puts("Quit");
-	} else if (Select == "E") 
-	{
-		puts("Encrypt");
-	} else if (Select =="D") 
-	{
-		puts("Decrypt");
+void * decrypt (char passed[]) {
+	int i;
+	char c;
+	for (i = 0; i < STRLEN; i++) {
+		c = passed[i];
+		if (c == ' '){
+			continue;
+		}
+		if (c == '\0') {
+			break;
+		}
+		MyLetter.cipher[i] = MyLetter.cipher[i] - 2;
 	}
-	*/
-	 
-	//printf("%s", passName);
-	//strcpy(MyLetter.name, passName);
-	//printf("The letter contains:\n %s\n, %s\n, %s\n", MyLetter.name, MyLetter.message, MyLetter.date);
-
-	/*char firstname[STRLEN];
-	char lastname[STRLEN];
-	int len_firstname;
-	int len_lastname;
-
-	printf("Enter your first name:");
-	len_firstname = readln(firstname, STRLEN);
-
-	printf("Enter your last name:");
-	len_lastname = readln(lastname, STRLEN);
-
-	printf("Hello, %s, %s\n", firstname, lastname);
-	printf("Length of firstname = %d, lastname = %d", len_firstname, len_lastname);
-*/
-
-	//forbreak();
-	//whilebreak();
 	return 0;
 }
